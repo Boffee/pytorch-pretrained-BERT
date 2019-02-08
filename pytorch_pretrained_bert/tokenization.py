@@ -83,6 +83,7 @@ class BertTokenizer(object):
           "Can't find a vocabulary file at path '{}'. To load the vocabulary from a Google pretrained "
           "model use `tokenizer = BertTokenizer.from_pretrained(PRETRAINED_MODEL_NAME)`".format(vocab_file))
     self.vocab = load_vocab(vocab_file)
+    self._unk_ids = self.vocab['[UNK]']
     self.ids_to_tokens = collections.OrderedDict(
         [(ids, tok) for tok, ids in self.vocab.items()])
     self.basic_tokenizer = BasicTokenizer(do_lower_case=do_lower_case,
@@ -126,7 +127,7 @@ class BertTokenizer(object):
     """Converts a sequence of tokens into ids using the vocab."""
     ids = []
     for token in tokens:
-      ids.append(self.vocab[token])
+      ids.append(self.vocab.get(token, self._unk_ids))
     if len(ids) > self.max_len:
       raise ValueError(
           "Token indices sequence length is longer than the specified maximum "
@@ -365,12 +366,17 @@ class WordpieceTokenizer(object):
           end -= 1
         if cur_substr is None:
           is_bad = True
+          substr = "".join(chars[start:])
+          if start > 0:
+            substr = "##" + substr
+          sub_tokens.append(substr)
           break
         sub_tokens.append(cur_substr)
         start = end
 
       if is_bad:
-        output_tokens.append(self.unk_token)
+        # Let dictionary lookup handle unknown/bad tokens.
+        output_tokens.append(sub_tokens)
       else:
         output_tokens.extend(sub_tokens)
     return output_tokens
