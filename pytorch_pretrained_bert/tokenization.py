@@ -109,7 +109,7 @@ class BertTokenizer(object):
 
   def untokenize(self, tokens, groups):
     tokens_clean = []
-    curr_group = None
+    curr_group = -1
     curr_tokens = []
     for token, group in zip(tokens, groups):
       if token in {'[CLS]', '[PAD]'}:
