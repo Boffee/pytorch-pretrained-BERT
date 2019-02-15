@@ -119,7 +119,17 @@ class BertTokenizer(object):
         if curr_tokens:
           tokens_clean.append(''.join(curr_tokens))
           curr_tokens = []
-      curr_tokens.append(re.sub('^##', '', token))
+      if token.startswith('##'):
+        curr_tokens.append(token[2:])
+      elif _is_punctuation(token[0]):
+        # All punc tokens are single chars based on tokenizer.
+        curr_tokens.append(token)
+      elif curr_tokens and not _is_punctuation(curr_tokens[-1][0]):
+        # prev nor curr token is punc and curr does not start with '##', 
+        # curr is a new word.
+        curr_tokens.append(' ' + token)
+      else:
+        curr_tokens.append(token)
     tokens_clean.append(''.join(curr_tokens))
     return ' '.join(tokens_clean)
 
