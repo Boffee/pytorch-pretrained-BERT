@@ -386,7 +386,7 @@ class WordpieceTokenizer(object):
 
       if is_bad:
         # Let dictionary lookup handle unknown/bad tokens.
-        output_tokens.append(sub_tokens)
+        output_tokens.extend(sub_tokens)
       else:
         output_tokens.extend(sub_tokens)
     return output_tokens
