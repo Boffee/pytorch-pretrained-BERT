@@ -139,7 +139,7 @@ class BertTokenizer(object):
     for token in tokens:
       ids.append(self.vocab.get(token, self._unk_ids))
     if len(ids) > self.max_len:
-      raise ValueError(
+      logging.warning(
           "Token indices sequence length is longer than the specified maximum "
           " sequence length for this BERT model ({} > {}). Running this"
           " sequence through BERT will result in indexing errors".format(len(ids), self.max_len)
