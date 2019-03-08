@@ -112,7 +112,7 @@ class BertTokenizer(object):
     curr_group = -1
     curr_tokens = []
     for token, group in zip(tokens, groups):
-      if token in {'[CLS]', '[PAD]'}:
+      if token in {'[CLS]', '[SEP]', '[PAD]'}:
         continue
       if curr_group != group:
         curr_group = group
